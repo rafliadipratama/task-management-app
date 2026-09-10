@@ -11,7 +11,7 @@ export const validateBody = (schema: AnyZodObject) => {
         res.status(400).json({
           success: false,
           error: {
-            message: 'Validation failed',
+            message: 'Validasi data gagal',
             details: error.errors.map((err) => ({
               field: err.path.join('.'),
               message: err.message,
@@ -35,7 +35,7 @@ export const validateQuery = (schema: AnyZodObject) => {
         res.status(400).json({
           success: false,
           error: {
-            message: 'Query validation failed',
+            message: 'Validasi parameter query gagal',
             details: error.errors.map((err) => ({
               field: err.path.join('.'),
               message: err.message,
@@ -59,7 +59,7 @@ export const validateParams = (schema: AnyZodObject) => {
         res.status(400).json({
           success: false,
           error: {
-            message: 'Path parameter validation failed',
+            message: 'Validasi parameter URL gagal',
             details: error.errors.map((err) => ({
               field: err.path.join('.'),
               message: err.message,

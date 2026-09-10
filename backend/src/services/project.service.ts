@@ -48,7 +48,7 @@ export class ProjectService {
     });
 
     if (!project) {
-      throw new AppError('Project not found', 404);
+      throw new AppError('Project tidak ditemukan', 404);
     }
 
     const totalTasks = project.tasks.length;
@@ -81,7 +81,7 @@ export class ProjectService {
   static async updateProject(id: string, data: UpdateProjectInput) {
     const existing = await prisma.project.findUnique({ where: { id } });
     if (!existing) {
-      throw new AppError('Project not found', 404);
+      throw new AppError('Project tidak ditemukan', 404);
     }
 
     return prisma.project.update({
@@ -96,10 +96,10 @@ export class ProjectService {
   static async deleteProject(id: string) {
     const existing = await prisma.project.findUnique({ where: { id } });
     if (!existing) {
-      throw new AppError('Project not found', 404);
+      throw new AppError('Project tidak ditemukan', 404);
     }
 
     await prisma.project.delete({ where: { id } });
-    return { id, message: 'Project deleted successfully' };
+    return { id, message: 'Project berhasil dihapus' };
   }
 }

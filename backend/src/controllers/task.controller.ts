@@ -31,7 +31,7 @@ export class TaskController {
       const task = await TaskService.createTask(req.body);
       res.status(201).json({
         success: true,
-        message: 'Task created successfully',
+        message: 'Task berhasil dibuat',
         data: task,
       });
     } catch (error) {
@@ -44,7 +44,7 @@ export class TaskController {
       const task = await TaskService.updateTask(req.params.id, req.body);
       res.json({
         success: true,
-        message: 'Task updated successfully',
+        message: 'Task berhasil diperbarui',
         data: task,
       });
     } catch (error) {

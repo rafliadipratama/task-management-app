@@ -31,7 +31,7 @@ export class ProjectController {
       const project = await ProjectService.createProject(req.body);
       res.status(201).json({
         success: true,
-        message: 'Project created successfully',
+        message: 'Project berhasil dibuat',
         data: project,
       });
     } catch (error) {
@@ -44,7 +44,7 @@ export class ProjectController {
       const project = await ProjectService.updateProject(req.params.id, req.body);
       res.json({
         success: true,
-        message: 'Project updated successfully',
+        message: 'Project berhasil diperbarui',
         data: project,
       });
     } catch (error) {

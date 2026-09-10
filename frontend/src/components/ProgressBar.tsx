@@ -24,8 +24,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <div className="flex justify-between items-center text-xs text-slate-500 font-medium">
           <span>
             {completed !== undefined && total !== undefined
-              ? `${completed} of ${total} tasks done`
-              : 'Completion'}
+              ? `${completed} dari ${total} task selesai`
+              : 'Progres Penyelesaian'}
           </span>
           <span className="font-semibold text-slate-700">{clampedProgress}%</span>
         </div>

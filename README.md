@@ -1,291 +1,288 @@
-# Task Management App
+# Aplikasi Manajemen Task & Project (Task Management App)
 
-A full-stack, end-to-end task management web application built for the **Spend Group Web Developer Technical Test**.
+Aplikasi web *full-stack end-to-end* untuk mengelola **Project** dan **Task**, dibangun untuk memenuhi persyaratan **Technical Interview – Web Developer di SPEND GROUP**.
 
-This repository is structured as a clean monorepo containing a **Next.js (App Router)** frontend, an **Express.js + TypeScript** REST API backend, and **Prisma ORM** connecting to a relational database (**PostgreSQL**, with zero-config **SQLite** fallback for instant local evaluation).
-
----
-
-## 🌟 Table of Contents
-
-- [Features](#-features)
-- [Architecture & Tech Stack](#-architecture--tech-stack)
-- [Tech Stack Justification](#-tech-stack-justification--library-choices)
-- [Project Structure](#-project-structure)
-- [Prerequisites](#-prerequisites)
-- [Environment Configuration](#-environment-configuration)
-- [Quick Start Guide](#-quick-start-guide)
-  - [Option A: Instant Local Setup (SQLite - 0 External Dependencies)](#option-a-instant-local-setup-recommended-for-quick-evaluation)
-  - [Option B: PostgreSQL with Docker Compose](#option-b-postgresql-with-docker-compose)
-  - [Option C: PostgreSQL with Local Service](#option-c-postgresql-with-local-service)
-- [Database Schema & Migrations](#-database-schema--migrations)
-- [REST API Reference](#-rest-api-reference)
-- [Assumptions & Design Decisions](#-assumptions--design-decisions)
-- [Testing & Quality Assurance](#-testing--quality-assurance)
+Repositori ini disusun menggunakan pendekatan **Monorepo** yang rapi, terdiri dari frontend **Next.js (App Router)**, backend REST API **Express.js + TypeScript**, serta **Prisma ORM** yang terhubung ke database relasional (**PostgreSQL**, dengan opsi fallback **SQLite** instan tanpa konfigurasi tambahan untuk pengujian lokal).
 
 ---
 
-## ✨ Features
+## 🌟 Daftar Isi
 
-### 1. Client-Side (Frontend)
-- **Projects Overview Dashboard**:
-  - Displays all projects in responsive cards.
-  - Shows overall task count, completion percentage, and breakdown badges (To Do, In Progress, Done).
-  - Aggregate statistics bar (Total Projects, Total Tasks, In Progress, Completed).
-  - Search filter for projects.
-  - Create and edit project modal with client-side & server-side validation.
-  - Delete project with cascading task cleanup and confirmation modal.
-- **Project Detail Page (`/projects/[id]`)**:
-  - Breadcrumb navigation back to project list.
-  - Project summary header with progress bar and statistics counters.
-  - Real-time task filtering by:
-    - **Keyword Search**: Instant debounce search across task titles and descriptions.
-    - **Status Filter**: `All`, `To Do`, `In Progress`, `Done`.
-    - **Priority Filter**: `All`, `Low`, `Medium`, `High`.
-  - Task management:
-    - Create new task with modal form.
-    - Edit existing task details.
-    - Delete task with safety confirmation dialog.
-    - 1-click status switcher (`Todo`, `In Progress`, `Done`) with optimistic UI updates.
-    - Priority visual badge indicators (Green for Low, Indigo for Medium, Rose for High).
-- **Comprehensive UI States**:
-  - **Loading state**: Polished skeleton loading for projects and task lists.
-  - **Empty state**: Informative illustrations and action buttons for "No projects yet", "No tasks in project yet", and "No tasks match filters".
-  - **Error state**: Clean error banner with retry triggers.
-  - **Success state**: Toast notifications for all operations (create, update, delete, status toggle).
-- **Responsive Design**: Designed for smooth usability across mobile phones, tablets, and desktop displays.
-
-### 2. Server-Side (Backend)
-- **RESTful API**: Standardized JSON endpoints for Project and Task resources.
-- **Relational Database**: One-to-Many relationship (one Project has many Tasks) with cascade deletion.
-- **Schema Validation**: Robust runtime schema validation using **Zod** for both request body and query parameters.
-- **Error Handling**: Centralized error middleware returning uniform error responses.
-- **Security & Logging**: Production-ready middleware including Helmet, CORS, and Morgan.
+- [Fitur Utama](#-fitur-utama)
+- [Arsitektur & Tech Stack](#-arsitektur--tech-stack)
+- [Alasan Pemilihan Library & Teknologi](#-alasan-pemilihan-library--teknologi)
+- [Struktur Folder Monorepo](#-struktur-folder-monorepo)
+- [Prasyarat Sistem](#-prasyarat-sistem)
+- [Konfigurasi Environment](#-konfigurasi-environment)
+- [Panduan Menjalankan Aplikasi](#-panduan-menjalankan-aplikasi)
+  - [Opsi A: Pengujian Lokal Instan (SQLite - 0 Ketergantungan Eksternal)](#opsi-a-pengujian-lokal-instan-rekomendasi-evaluasi-cepat)
+  - [Opsi B: PostgreSQL dengan Docker Compose](#opsi-b-postgresql-dengan-docker-compose)
+  - [Opsi C: PostgreSQL Lokal Asli](#opsi-c-postgresql-lokal-asli)
+- [Skema & Migrasi Database](#-skema--migrasi-database)
+- [Dokumentasi REST API](#-dokumentasi-rest-api)
+- [Asumsi & Keputusan Desain](#-asumsi--keputusan-desain)
+- [Uji Coba & Build](#-uji-coba--build)
 
 ---
 
-## 🛠 Architecture & Tech Stack
+## ✨ Fitur Utama
 
-| Layer | Technology | Version | Role |
+### 1. Sisi Frontend (Client-Side)
+- **Dashboard Daftar Project (`/`)**:
+  - Menampilkan seluruh project dalam kartu (*card*) responsif.
+  - Indikator kemajuan (*progress bar*) persentase penyelesaian dan rincian jumlah status (*To Do*, *Sedang Dikerjakan*, *Selesai*).
+  - Ringkasan metrik global (*Total Project, Total Task, Sedang Dikerjakan, Telah Selesai*).
+  - Fitur pencarian project berdasarkan nama atau deskripsi.
+  - Modal pembuatan project baru dan modal edit project dengan validasi input.
+  - Fitur hapus project dengan dialog konfirmasi (*cascade delete* pada seluruh task terkait).
+- **Halaman Detail Project (`/projects/[id]`)**:
+  - Navigasi *breadcrumb* kembali ke daftar project.
+  - Header informasi project lengkap dengan *progress bar* dan statistik counter.
+  - **Pencarian & Filter Task**:
+    * **Pencarian Kata Kunci**: Pencarian teks instan pada judul maupun deskripsi task.
+    * **Filter Status**: `Semua`, `To Do`, `Sedang Dikerjakan`, `Selesai`.
+    * **Filter Prioritas**: `Semua Prioritas`, `Rendah`, `Sedang`, `Tinggi`.
+  - **Manajemen Task (CRUD)**:
+    * Tambah task baru melalui modal formulir interaktif.
+    * Edit judul, deskripsi, prioritas, dan status task.
+    * Hapus task dengan konfirmasi dialog modal yang aman.
+    * **1-Click Status Switcher**: Tombol cepat untuk mengubah status task (`todo`, `in_progress`, `done`) dengan *optimistic UI update*.
+    * **Label Prioritas Visual**: Indikator warna badge yang jelas (Hijau/Sky untuk Rendah, Indigo untuk Sedang, Rose/Merah untuk Tinggi).
+- **Manajemen State UI Lengkap**:
+  - **Loading State**: Tampilan *skeleton loader* berdenyut yang halus saat proses *fetching* data.
+  - **Empty State**: Ilustrasi dan pesan informatif saat belum ada project, belum ada task, atau tidak ada hasil yang cocok dengan pencarian/filter.
+  - **Error State**: Pesan galat jelas dengan tombol *Coba Lagi*.
+  - **Success State**: Notifikasi *toast* interaktif (`react-hot-toast`) pada setiap aksi pembuatan, pembaruan, penghapusan, dan pengubahan status.
+- **Desain Responsif**: Tampilan antarmuka fleksibel dan nyaman diakses pada perangkat seluler (*mobile*) maupun desktop.
+
+### 2. Sisi Backend (Server-Side & Database)
+- **RESTful API**: Menyediakan endpoint standar untuk entitas Project dan Task.
+- **Relasi Database**: Relasi *One-to-Many* (Satu Project memiliki Banyak Task) dengan penghapusan kaskade (*onDelete: Cascade*).
+- **Validasi Skema**: Validasi ketat pada *body*, *query*, dan *parameter URL* menggunakan pustaka **Zod**.
+- **Penanganan Galat Terpusat**: *Error middleware* yang mengembalikan struktur respon error yang konsisten.
+- **Keamanan & Logging**: Middleware produksi mencakup CORS, Helmet, dan Morgan.
+
+---
+
+## 🛠 Arsitektur & Tech Stack
+
+| Bagian | Teknologi | Versi | Peran |
 | :--- | :--- | :--- | :--- |
-| **Frontend** | [Next.js](https://nextjs.org/) (App Router) | 14.2.x | Modern React Framework with Server and Client Components |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) | 5.7.x | Type safety across entire application |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/) | 3.4.x | Utility-first, clean responsive UI styling |
-| **Icons** | [Lucide React](https://lucide.dev/) | 0.468.x | Lightweight SVG icon system |
-| **Notifications** | [React Hot Toast](https://react-hot-toast.com/) | 2.4.x | Non-intrusive feedback toast notifications |
-| **Backend** | [Express.js](https://expressjs.com/) | 4.21.x | Fast, unopinionated REST API framework |
-| **ORM** | [Prisma ORM](https://www.prisma.io/) | 5.22.x | Next-generation Node.js & TypeScript ORM |
-| **Validation** | [Zod](https://zod.dev/) | 3.23.x | TypeScript-first schema declaration & validation |
-| **Database** | PostgreSQL / SQLite | 16 / 3 | Relational SQL database storage |
+| **Frontend** | [Next.js](https://nextjs.org/) (App Router) | 14.2.x | Framework React modern dengan routing berbasis folder |
+| **Bahasa** | [TypeScript](https://www.typescriptlang.org/) | 5.7.x | *Static typing* end-to-end untuk mencegah bug runtime |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) | 3.4.x | Utility-first CSS untuk UI yang bersih, rapi, dan responsif |
+| **Ikon** | [Lucide React](https://lucide.dev/) | 0.468.x | Set ikon SVG yang ringan dan modern |
+| **Notifikasi** | [React Hot Toast](https://react-hot-toast.com/) | 2.4.x | Notifikasi feedback pengguna yang elegan |
+| **Backend** | [Express.js](https://expressjs.com/) | 4.21.x | Framework REST API Node.js yang cepat dan fleksibel |
+| **ORM** | [Prisma ORM](https://www.prisma.io/) | 5.22.x | Type-safe ORM untuk manajemen skema, migrasi, dan seed |
+| **Validasi** | [Zod](https://zod.dev/) | 3.23.x | Validasi skema runtime berbasis TypeScript |
+| **Database** | PostgreSQL / SQLite | 16 / 3 | Database relasional SQL |
 
 ---
 
-## 💡 Tech Stack Justification & Library Choices
+## 💡 Alasan Pemilihan Library & Teknologi
 
-As required by the technical guidelines:
+Sesuai instruksi pada dokumen tes teknis:
 
 1. **Next.js (App Router)**:
-   - Chosen for its standard directory-based routing (`/` and `/projects/[id]`), excellent SEO foundations, and clean separation between layout and page views.
+   - Pendekatan routing berbasis direktori (`/` dan `/projects/[id]`) memudahkan penyusunan halaman dan pemisahan *layout* secara modular.
 2. **Express.js + TypeScript**:
-   - Chosen for clarity, maintainability, and readability. A layered architecture (`routes` -> `controllers` -> `services` -> `validations`) provides separation of concerns without over-engineering.
+   - Struktur berlapis (*routes* -> *controllers* -> *services* -> *validations*) sangat mudah dipahami (*readable*), dipelihara (*maintainable*), dan diuji (*testable*) tanpa *overhead* yang berlebihan.
 3. **Prisma ORM**:
-   - Provides end-to-end type safety, automated migration management, intuitive relational queries (`include: { tasks: true }`), and seamless seeding.
-4. **Zod Validation**:
-   - Guarantees strict runtime validation for incoming payloads and query parameters before reaching database controllers, returning descriptive error messages.
+   - Memastikan integritas tipe data antara database dan backend secara otomatis, mempermudah relasi *one-to-many*, serta mengelola skema migrasi dan seeding dengan konsisten.
+4. **Zod**:
+   - Memberikan jaminan keamanan tipe data saat runtime dan menghasilkan pesan kesalahan validasi yang jelas bagi pengguna.
 5. **Tailwind CSS**:
-   - Enables fast, responsive design focused on usability and clean visual hierarchy without bloat.
-6. **Dual Database Flexibility (PostgreSQL & SQLite)**:
-   - While PostgreSQL is the primary database specified in the brief, an automated SQLite setup script is included so that reviewers can evaluate the application instantly without needing Docker or a live database server.
+   - Memprioritaskan kerapian dan kemudahan penggunaan (*usability*) tanpa visual yang berlebihan.
+6. **Dukungan Dual Database (PostgreSQL & SQLite)**:
+   - PostgreSQL disediakan sebagai database utama yang disyaratkan dalam soal (lengkap dengan konfigurasi Docker Compose & file migrasi DDL SQL). Namun, disediakan pula script SQLite otomatis agar penguji dapat langsung mengevaluasi fungsionalitas aplikasi secara instan tanpa hambatan lingkungan instalasi.
 
 ---
 
-## 📁 Project Structure
+## 📁 Struktur Folder Monorepo
 
-```
+```text
 task-management-app/
 ├── backend/
 │   ├── prisma/
-│   │   ├── schema.prisma              # Active Prisma schema
-│   │   ├── schema.postgres.prisma     # PostgreSQL schema reference
-│   │   ├── schema.sqlite.prisma       # SQLite schema reference
-│   │   ├── seed.ts                    # Realistic mock data seed script
+│   │   ├── schema.prisma              # Skema Prisma aktif
+│   │   ├── schema.postgres.prisma     # Referensi skema PostgreSQL
+│   │   ├── schema.sqlite.prisma       # Referensi skema SQLite
+│   │   ├── seed.ts                    # Script data awal (seed)
 │   │   └── migrations/
 │   │       └── 20260910000000_init/
-│   │           └── migration.sql      # PostgreSQL DDL migration SQL
+│   │           └── migration.sql      # File DDL SQL migrasi PostgreSQL
 │   ├── src/
-│   │   ├── config/                    # Environment & Prisma client
-│   │   ├── controllers/               # HTTP request handlers
-│   │   ├── middleware/                # Validation & error handlers
-│   │   ├── routes/                    # Express REST route definitions
-│   │   ├── services/                  # Business logic & database operations
-│   │   ├── validations/               # Zod validation schemas
-│   │   └── index.ts                   # Express server entry point
+│   │   ├── config/                    # Konfigurasi env & Prisma
+│   │   ├── controllers/               # Handler request HTTP
+│   │   ├── middleware/                # Middleware error & validasi Zod
+│   │   ├── routes/                    # Definisi rute REST API
+│   │   ├── services/                  # Logika bisnis & interaksi database
+│   │   ├── validations/               # Skema validasi Zod
+│   │   └── index.ts                   # Entry point server Express
 │   ├── .env.example
 │   ├── tsconfig.json
 │   └── package.json
 ├── frontend/
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── layout.tsx             # Root layout & providers
-│   │   │   ├── page.tsx               # Projects dashboard view
-│   │   │   ├── globals.css            # Tailwind directives
+│   │   │   ├── layout.tsx             # Root layout & Toaster
+│   │   │   ├── page.tsx               # Halaman Dashboard Project
+│   │   │   ├── globals.css            # Pengaturan CSS & Tailwind
 │   │   │   └── projects/[id]/
-│   │   │       └── page.tsx           # Project detail & task management
-│   │   ├── components/                # Reusable UI components
-│   │   │   ├── Badge.tsx              # Status and Priority pills
-│   │   │   ├── ConfirmDialog.tsx      # Deletion confirmation dialog
-│   │   │   ├── EmptyState.tsx         # Empty state representations
-│   │   │   ├── ErrorState.tsx         # Error fallback with retry
-│   │   │   ├── LoadingSkeleton.tsx    # Skeletons for cards and details
-│   │   │   ├── Modal.tsx              # Base accessible modal
-│   │   │   ├── Navbar.tsx             # Top header bar
-│   │   │   ├── ProgressBar.tsx        # Project progress indicator
-│   │   │   ├── ProjectCard.tsx        # Project summary card
-│   │   │   ├── ProjectModal.tsx       # Create/Edit project form
-│   │   │   ├── TaskCard.tsx           # Task card with status changer
-│   │   │   ├── TaskFilters.tsx        # Search, status & priority filters
-│   │   │   ├── TaskModal.tsx          # Create/Edit task form
-│   │   │   └── ToastProvider.tsx      # React-hot-toast configuration
+│   │   │       └── page.tsx           # Halaman Detail Project & Task
+│   │   ├── components/                # Komponen UI modular
+│   │   │   ├── Badge.tsx              # Label status dan prioritas
+│   │   │   ├── ConfirmDialog.tsx      # Modal dialog konfirmasi hapus
+│   │   │   ├── EmptyState.tsx         # Tampilan kondisi kosong
+│   │   │   ├── ErrorState.tsx         # Tampilan kondisi error
+│   │   │   ├── LoadingSkeleton.tsx    # Komponen loading skeleton
+│   │   │   ├── Modal.tsx              # Komponen dasar modal
+│   │   │   ├── Navbar.tsx             # Bilah navigasi atas
+│   │   │   ├── ProgressBar.tsx        # Indikator progres penyelesaian
+│   │   │   ├── ProjectCard.tsx        # Kartu ringkasan project
+│   │   │   ├── ProjectModal.tsx       # Formulir tambah/edit project
+│   │   │   ├── TaskCard.tsx           # Kartu task dengan pengubah status
+│   │   │   ├── TaskFilters.tsx        # Fitur pencarian & filter task
+│   │   │   ├── TaskModal.tsx          # Formulir tambah/edit task
+│   │   │   └── ToastProvider.tsx      # Konfigurasi notifikasi toast
 │   │   ├── lib/
-│   │   │   ├── api.ts                 # Typed REST API client
-│   │   │   └── utils.ts               # Class merging & formatters
+│   │   │   ├── api.ts                 # Klien API REST
+│   │   │   └── utils.ts               # Fungsi pembantu kelas CSS & format tanggal
 │   │   └── types/
-│   │       └── index.ts               # Shared TypeScript interfaces
+│   │       └── index.ts               # Definisi tipe TypeScript
 │   ├── .env.example
 │   ├── tailwind.config.ts
 │   ├── tsconfig.json
 │   └── package.json
-├── docker-compose.yml                 # PostgreSQL container setup
-├── package.json                       # Root workspaces configuration
-└── README.md
+├── docker-compose.yml                 # Layanan kontainer PostgreSQL
+├── package.json                       # Konfigurasi npm workspaces & script root
+└── README.md                          # Dokumentasi lengkap
 ```
 
 ---
 
-## 📋 Prerequisites
+## 📋 Prasyarat Sistem
 
-- **Node.js**: `v18.17.0` or higher (tested on `v20.18.0`)
-- **npm**: `v9.x` or `v10.x`
-- Optional: **Docker** & **Docker Compose** (for running PostgreSQL container)
+- **Node.js**: `v18.17.0` atau yang lebih baru (diuji pada `v20.18.0`)
+- **npm**: `v9.x` atau `v10.x`
+- Opsional: **Docker & Docker Compose** (jika ingin menjalankan PostgreSQL via kontainer)
 
 ---
 
-## ⚙️ Environment Configuration
+## ⚙️ Konfigurasi Environment
 
-### Backend Environment (`backend/.env`)
+### Backend (`backend/.env`)
 
-Copy `backend/.env.example` to `backend/.env`:
+Salin `backend/.env.example` ke `backend/.env`:
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-Default variables:
+Contoh variabel:
 ```env
 PORT=5001
 NODE_ENV=development
-# For SQLite (instant setup):
+
+# Opsi SQLite (evaluasi instan):
 DATABASE_URL="file:./dev.db"
 
-# For PostgreSQL (Docker / Local):
+# Opsi PostgreSQL (Docker / Lokal):
 # DATABASE_URL="postgresql://postgres:postgrespassword@localhost:5432/task_management_db?schema=public"
 
 CLIENT_ORIGIN=http://localhost:3000
 ```
 
-### Frontend Environment (`frontend/.env.local`)
+### Frontend (`frontend/.env.local`)
 
-Copy `frontend/.env.example` to `frontend/.env.local`:
+Salin `frontend/.env.example` ke `frontend/.env.local`:
 
 ```bash
 cp frontend/.env.example frontend/.env.local
 ```
 
-Default variables:
+Contoh variabel:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5001/api
 ```
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Panduan Menjalankan Aplikasi
 
-You can run the application using either **Option A (Zero-setup SQLite)** or **Option B (PostgreSQL with Docker)**.
+Anda dapat menjalankan aplikasi menggunakan **Opsi A (SQLite Instan)** atau **Opsi B (PostgreSQL)**.
 
-### Option A: Instant Local Setup (Recommended for Quick Evaluation)
+### Opsi A: Pengujian Lokal Instan (Rekomendasi Evaluasi Cepat)
 
-Zero dependencies required. Runs entirely within Node.js.
+Tidak memerlukan instalasi service database eksternal.
 
-1. **Install dependencies**:
+1. **Install dependensi**:
    ```bash
    npm install
    ```
 
-2. **Initialize SQLite Database & Seed Data**:
+2. **Inisialisasi Database SQLite & Data Awal (Seed)**:
    ```bash
    npm run db:use-sqlite --workspace=backend
    ```
-   *(This applies the schema to a local `dev.db` SQLite database and seeds 3 realistic projects with 10 tasks).*
+   *(Perintah ini akan membuat database lokal `dev.db`, menerapkan skema tabel, dan mengisi 3 project serta 10 task awal).*
 
-3. **Start Both Backend and Frontend**:
+3. **Jalankan Frontend & Backend Sekaligus**:
    ```bash
    npm run dev
    ```
 
-4. **Open in Browser**:
+4. **Buka di Browser**:
    - **Frontend**: [http://localhost:3000](http://localhost:3000)
    - **Backend API**: [http://localhost:5001/api/health](http://localhost:5001/api/health)
 
 ---
 
-### Option B: PostgreSQL with Docker Compose
+### Opsi B: PostgreSQL dengan Docker Compose
 
-If you have Docker installed:
-
-1. **Start PostgreSQL Container**:
+1. **Jalankan Kontainer PostgreSQL**:
    ```bash
    docker compose up -d
    ```
 
-2. **Configure Backend `.env`**:
-   In `backend/.env`, set:
+2. **Atur Environment Backend**:
+   Pada file `backend/.env`, gunakan URL PostgreSQL:
    ```env
    DATABASE_URL="postgresql://postgres:postgrespassword@localhost:5432/task_management_db?schema=public"
    ```
 
-3. **Run PostgreSQL Schema Push & Seed**:
+3. **Sinkronisasi Skema & Seed Data ke PostgreSQL**:
    ```bash
    npm run db:use-postgres --workspace=backend
    ```
 
-4. **Start Application**:
+4. **Jalankan Aplikasi**:
    ```bash
    npm run dev
    ```
 
 ---
 
-### Option C: PostgreSQL with Local Service
+### Opsi C: PostgreSQL Lokal Asli
 
-If you run PostgreSQL natively on your machine:
-
-1. Create database:
+1. Buat database:
    ```sql
    CREATE DATABASE task_management_db;
    ```
-2. Update `DATABASE_URL` in `backend/.env` with your username and password.
-3. Run migrations and seed:
+2. Sesuaikan username dan password pada `DATABASE_URL` di `backend/.env`.
+3. Jalankan migrasi dan seed:
    ```bash
    npm run db:use-postgres --workspace=backend
    ```
-4. Run `npm run dev`.
+4. Jalankan aplikasi dengan `npm run dev`.
 
 ---
 
-## 🗄 Database Schema & Migrations
+## 🗄 Skema & Migrasi Database
 
-### Entity Relationship
-```
+### Relasi Entitas
+```text
 +------------------------------------+          +------------------------------------+
 |             Project                |          |                Task                |
 +------------------------------------+          +------------------------------------+
@@ -302,55 +299,55 @@ If you run PostgreSQL natively on your machine:
                                                 +------------------------------------+
 ```
 
-- **Cascade Delete**: When a `Project` is deleted, all child `Task` records are deleted automatically (`onDelete: Cascade`).
-- **Indexes**: Indexes on `projectId`, `status`, and `priority` for query performance.
+- **Cascade Delete**: Ketika suatu `Project` dihapus, seluruh `Task` yang berada di dalamnya akan terhapus otomatis secara bersih.
+- **Index**: Terdapat index pada `projectId`, `status`, dan `priority` untuk kecepatan pencarian data.
 
 ---
 
-## 📡 REST API Reference
+## 📡 Dokumentasi REST API
 
 Base URL: `http://localhost:5001/api`
 
 ### Health Check
-- `GET /health` - Service status & health check.
+- `GET /health` - Memeriksa status kesehatan layanan backend.
 
-### Projects Endpoints
-| Method | Endpoint | Description | Request Body |
+### Endpoint Project
+| Metode | Endpoint | Deskripsi | Request Body |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/projects` | Get all projects with task statistics | - |
-| `GET` | `/projects/:id` | Get single project with all tasks | - |
-| `POST` | `/projects` | Create new project | `{ "title": string, "description"?: string }` |
-| `PATCH` | `/projects/:id` | Update project | `{ "title"?: string, "description"?: string }` |
-| `DELETE` | `/projects/:id` | Delete project (cascades to tasks) | - |
+| `GET` | `/projects` | Mengambil seluruh project beserta statistik task | - |
+| `GET` | `/projects/:id` | Mengambil detail satu project beserta tasknya | - |
+| `POST` | `/projects` | Membuat project baru | `{ "title": string, "description"?: string }` |
+| `PATCH` | `/projects/:id` | Memperbarui project | `{ "title"?: string, "description"?: string }` |
+| `DELETE` | `/projects/:id` | Menghapus project beserta seluruh task di dalamnya | - |
 
-### Tasks Endpoints
-| Method | Endpoint | Description | Query / Body Parameters |
+### Endpoint Task
+| Metode | Endpoint | Deskripsi | Query / Body Parameters |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/tasks` | List tasks with filters | Query: `projectId`, `search`, `status`, `priority`, `sortBy`, `order` |
-| `GET` | `/tasks/:id` | Get single task detail | - |
-| `POST` | `/tasks` | Create task | Body: `{ "title": string, "description"?: string, "status"?: "todo" \| "in_progress" \| "done", "priority"?: "low" \| "medium" \| "high", "projectId": string }` |
-| `PATCH` | `/tasks/:id` | Update task | Body: `{ "title"?: string, "description"?: string, "status"?: string, "priority"?: string }` |
-| `DELETE` | `/tasks/:id` | Delete task | - |
+| `GET` | `/tasks` | Mengambil daftar task dengan filter | Query: `projectId`, `search`, `status`, `priority`, `sortBy`, `order` |
+| `GET` | `/tasks/:id` | Mengambil detail satu task | - |
+| `POST` | `/tasks` | Membuat task baru | Body: `{ "title": string, "description"?: string, "status"?: "todo" \| "in_progress" \| "done", "priority"?: "low" \| "medium" \| "high", "projectId": string }` |
+| `PATCH` | `/tasks/:id` | Memperbarui task | Body: `{ "title"?: string, "description"?: string, "status"?: string, "priority"?: string }` |
+| `DELETE` | `/tasks/:id` | Menghapus task | - |
 
-### Standard Response Format
+### Format Standar Respon
 
-**Success (200 / 201)**:
+**Berhasil (200 / 201)**:
 ```json
 {
   "success": true,
   "data": { ... },
-  "message": "Project created successfully"
+  "message": "Project berhasil dibuat"
 }
 ```
 
-**Error (400 / 404 / 500)**:
+**Gagal (400 / 404 / 500)**:
 ```json
 {
   "success": false,
   "error": {
-    "message": "Validation failed",
+    "message": "Validasi data gagal",
     "details": [
-      { "field": "title", "message": "Title cannot be empty" }
+      { "field": "title", "message": "Judul project wajib diisi" }
     ]
   }
 }
@@ -358,24 +355,24 @@ Base URL: `http://localhost:5001/api`
 
 ---
 
-## 📌 Assumptions & Design Decisions
+## 📌 Asumsi & Keputusan Desain
 
-1. **Monorepo Architecture**:
-   - Placed frontend and backend in one repository using standard npm workspaces. This satisfies the test preference ("*satu repository monorepo direkomendasikan*") and ensures one unified command (`npm run dev`) starts the full application.
-2. **Task Status & Priorities**:
-   - Statuses: `todo`, `in_progress`, and `done`.
-   - Priorities: `low`, `medium`, and `high`.
-   - In the frontend, clicking a status button immediately updates the UI optimistically and syncs with the server. If an error occurs, it rolls back gracefully and displays an error toast.
-3. **Database Portability**:
-   - To make testing frictionless for the reviewers, the code is 100% compatible with both PostgreSQL and SQLite through Prisma. The PostgreSQL schema and migration scripts (`schema.postgres.prisma` and `migration.sql`) are fully provided.
-4. **Input Validation**:
-   - All inputs (both in frontend modals and backend controllers) enforce length limits and required fields using Zod schemas.
+1. **Struktur Monorepo**:
+   - Menempatkan backend dan frontend dalam satu repositori menggunakan npm workspaces sesuai saran pada instruksi tes. Hal ini menyederhanakan proses instalasi dan memungkinkan eksekusi frontend & backend secara bersamaan melalui satu perintah (`npm run dev`).
+2. **Status & Prioritas Task**:
+   - Nilai status: `todo` (Akan Dikerjakan), `in_progress` (Sedang Dikerjakan), dan `done` (Selesai).
+   - Nilai prioritas: `low` (Rendah), `medium` (Sedang), dan `high` (Tinggi).
+   - Pengubahan status pada kartu task dilakukan secara instan dengan *optimistic UI update*. Jika koneksi bermasalah, state otomatis dikembalikan ke nilai semula disertai notifikasi toast error.
+3. **Fleksibilitas Database**:
+   - Menjaga kepatuhan 100% terhadap spesifikasi PostgreSQL sambil menyediakan skema SQLite yang siap pakai agar proses review tes berlangsung cepat dan nyaman.
+4. **Validasi Menyeluruh**:
+   - Semua input divalidasi ganda: pada sisi antarmuka pengguna (modal formulir) dan sisi controller backend via skema Zod.
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## 🧪 Uji Coba & Build
 
-To verify both the backend and frontend builds:
+Untuk memastikan semua modul terkompilasi tanpa kesalahan:
 
 ```bash
 # Build backend
@@ -384,10 +381,10 @@ npm run build --workspace=backend
 # Build frontend
 npm run build --workspace=frontend
 
-# Seed database with sample data
+# Jalankan seeder database
 npm run db:seed --workspace=backend
 ```
 
 ---
 
-*Authored for the Web Developer Technical Assessment at Spend Group.*
+*Dibuat untuk evaluasi tes teknis posisi Web Developer di SPEND GROUP.*

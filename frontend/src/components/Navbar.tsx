@@ -43,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNewProjectClick }) => {
                 }`}
               >
                 <FolderKanban className="w-4 h-4" />
-                All Projects
+                Semua Project
               </Link>
             </nav>
           </div>
@@ -57,8 +57,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onNewProjectClick }) => {
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm hover:shadow transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">New Project</span>
-                <span className="sm:hidden">New</span>
+                <span className="hidden sm:inline">Project Baru</span>
+                <span className="sm:hidden">Baru</span>
               </button>
             )}
           </div>

@@ -3,70 +3,40 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seeding...');
+  console.log('🌱 Memulai proses seeding database...');
 
-  // Clean existing data
+  // Hapus data lama
   await prisma.task.deleteMany();
   await prisma.project.deleteMany();
 
-  // Project 1: E-Commerce Mobile App Redesign
-  const project1 = await prisma.project.create({
+  // Project 1: Redesain Aplikasi Mobile E-Commerce
+  await prisma.project.create({
     data: {
-      title: 'E-Commerce Mobile App Redesign',
-      description: 'Revamping the user checkout flow, cart experience, and home page recommendations.',
+      title: 'Redesain Aplikasi Mobile E-Commerce',
+      description: 'Pembaruan antarmuka alur checkout, pengalaman keranjang belanja, dan rekomendasi beranda.',
       tasks: {
         create: [
           {
-            title: 'Design Checkout Flow Wireframes',
-            description: 'Create Figma interactive prototype for one-click checkout and address selector.',
+            title: 'Desain Wireframe Alur Checkout',
+            description: 'Membuat prototipe interaktif di Figma untuk fitur one-click checkout dan pemilihan alamat.',
             status: 'done',
             priority: 'high',
           },
           {
-            title: 'Implement Payment Gateway Integration',
-            description: 'Integrate Stripe and Midtrans webhooks for handling card and QRIS transactions.',
+            title: 'Integrasi Payment Gateway',
+            description: 'Integrasi webhook pembayaran untuk menangani transaksi kartu kredit dan QRIS.',
             status: 'in_progress',
             priority: 'high',
           },
           {
-            title: 'Refactor Product Search Engine',
-            description: 'Enhance autocomplete search queries with debounce and category filters.',
+            title: 'Optimasi Mesin Pencarian Produk',
+            description: 'Meningkatkan query pencarian otomatis dengan debounce dan filter kategori produk.',
             status: 'todo',
             priority: 'medium',
           },
           {
-            title: 'Setup Push Notifications',
-            description: 'Send delivery and discount updates using Firebase Cloud Messaging.',
-            status: 'todo',
-            priority: 'low',
-          },
-        ],
-      },
-    },
-  });
-
-  // Project 2: Internal HR & Attendance System
-  const project2 = await prisma.project.create({
-    data: {
-      title: 'Internal HR & Attendance Portal',
-      description: 'Employee management portal for shift scheduling, leave requests, and payroll tracking.',
-      tasks: {
-        create: [
-          {
-            title: 'Database Schema for Shift Patterns',
-            description: 'Model rotating shifts, overtime rules, and holiday calendar.',
-            status: 'done',
-            priority: 'medium',
-          },
-          {
-            title: 'Geolocation Verification API',
-            description: 'Verify employee check-in latitude and longitude within office geofence.',
-            status: 'in_progress',
-            priority: 'high',
-          },
-          {
-            title: 'Export Monthly Attendance to Excel',
-            description: 'Generate formatted spreadsheet with totals and deductions.',
+            title: 'Konfigurasi Notifikasi Push',
+            description: 'Mengirimkan notifikasi status pengiriman paket dan promo diskon.',
             status: 'todo',
             priority: 'low',
           },
@@ -75,28 +45,58 @@ async function main() {
     },
   });
 
-  // Project 3: Cloud Infrastructure Optimization
-  const project3 = await prisma.project.create({
+  // Project 2: Portal Absensi & HR Internal
+  await prisma.project.create({
     data: {
-      title: 'Cloud Infrastructure & Security Audit',
-      description: 'Migrating legacy monolith services to containerized microservices and hardening IAM policies.',
+      title: 'Portal Absensi & HR Internal',
+      description: 'Aplikasi manajemen karyawan untuk jadwal shift kerja, pengajuan cuti, dan rekap payroll bulanan.',
       tasks: {
         create: [
           {
-            title: 'Setup Automated CI/CD Pipeline',
-            description: 'GitHub Actions workflow for linting, testing, and zero-downtime deployment.',
+            title: 'Skema Database Pola Shift Kerja',
+            description: 'Merancang tabel untuk shift bergilir, aturan lembur, dan kalender hari libur nasional.',
+            status: 'done',
+            priority: 'medium',
+          },
+          {
+            title: 'API Verifikasi Titik Lokasi Geolocation',
+            description: 'Validasi koordinat GPS saat check-in karyawan agar sesuai radius area kantor.',
+            status: 'in_progress',
+            priority: 'high',
+          },
+          {
+            title: 'Ekspor Rekap Absensi Bulanan ke Excel',
+            description: 'Membuat template spreadsheet laporan jam kerja dan potongan otomatis.',
+            status: 'todo',
+            priority: 'low',
+          },
+        ],
+      },
+    },
+  });
+
+  // Project 3: Audit Keamanan & Infrastruktur Cloud
+  await prisma.project.create({
+    data: {
+      title: 'Audit Keamanan & Infrastruktur Cloud',
+      description: 'Migrasi arsitektur monolitik ke microservices berbasis kontainer serta pengetatan izin akses IAM.',
+      tasks: {
+        create: [
+          {
+            title: 'Setup Otomatisasi CI/CD Pipeline',
+            description: 'Konfigurasi alur kerja GitHub Actions untuk automated test dan deployment tanpa downtime.',
             status: 'done',
             priority: 'high',
           },
           {
-            title: 'Rotate Root API Keys and Certificates',
-            description: 'Automate SSL renewal via Let\'s Encrypt and migrate keys to HashiCorp Vault.',
+            title: 'Rotasi Sertifikat SSL & Kunci API Root',
+            description: 'Pembaruan berkala SSL gratis via Let\'s Encrypt dan migrasi secrets ke Vault.',
             status: 'done',
             priority: 'high',
           },
           {
-            title: 'Conduct Load Testing on Black Friday Scenario',
-            description: 'Simulate 15,000 concurrent RPS using k6 scripts.',
+            title: 'Uji Beban Performa (Load Testing)',
+            description: 'Simulasi beban 15.000 request per detik menjelang promo tanggal kembar menggunakan k6.',
             status: 'in_progress',
             priority: 'medium',
           },
@@ -105,12 +105,12 @@ async function main() {
     },
   });
 
-  console.log(`✅ Seed finished successfully! Created 3 projects with 10 tasks.`);
+  console.log(`✅ Seeding database berhasil! Dibuat 3 project dengan 10 task.`);
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error during seeding:', e);
+    console.error('❌ Terjadi kesalahan saat seeding:', e);
     process.exit(1);
   })
   .finally(async () => {

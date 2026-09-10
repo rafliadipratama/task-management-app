@@ -113,7 +113,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors text-left"
               >
                 <Trash2 className="w-3.5 h-3.5 text-rose-500" />
-                Delete Task
+                Hapus Task
               </button>
             </div>
           )}
@@ -123,7 +123,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       {/* Card Footer: Status quick selector & created date */}
       <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-slate-100 flex-wrap">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-400">Status:</span>
+          <span className="text-xs font-medium text-slate-400">Ubah Status:</span>
           <div className="inline-flex rounded-lg p-0.5 bg-slate-100 border border-slate-200/60">
             <button
               type="button"
@@ -135,7 +135,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               }`}
             >
               <Clock className="w-3 h-3" />
-              Todo
+              To Do
             </button>
             <button
               type="button"
@@ -147,7 +147,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               }`}
             >
               <AlertCircle className="w-3 h-3" />
-              In Progress
+              Dikerjakan
             </button>
             <button
               type="button"
@@ -159,7 +159,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               }`}
             >
               <CheckCircle2 className="w-3 h-3" />
-              Done
+              Selesai
             </button>
           </div>
         </div>

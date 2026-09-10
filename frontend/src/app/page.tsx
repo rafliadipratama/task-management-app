@@ -37,8 +37,8 @@ export default function ProjectsPage() {
       const data = await api.getProjects();
       setProjects(data);
     } catch (err: any) {
-      console.error('Failed to fetch projects:', err);
-      setError(err.message || 'Failed to load projects');
+      console.error('Gagal mengambil data project:', err);
+      setError(err.message || 'Gagal memuat data project');
     } finally {
       setIsLoading(false);
     }
@@ -68,16 +68,16 @@ export default function ProjectsPage() {
         setProjects((prev) =>
           prev.map((p) => (p.id === updated.id ? { ...p, ...updated } : p))
         );
-        toast.success('Project updated successfully!');
+        toast.success('Project berhasil diperbarui!');
       } else {
-        const created = await api.createProject(data as CreateProjectPayload);
-        // Refresh all projects to get fresh task stats
+        await api.createProject(data as CreateProjectPayload);
+        // Refresh seluruh project untuk memperbarui statistik
         await fetchProjects();
-        toast.success('Project created successfully!');
+        toast.success('Project baru berhasil dibuat!');
       }
       setIsModalOpen(false);
     } catch (err: any) {
-      toast.error(err.message || 'Failed to save project');
+      toast.error(err.message || 'Gagal menyimpan project');
     } finally {
       setIsSubmitting(false);
     }
@@ -89,16 +89,16 @@ export default function ProjectsPage() {
     try {
       await api.deleteProject(projectToDelete.id);
       setProjects((prev) => prev.filter((p) => p.id !== projectToDelete.id));
-      toast.success('Project deleted successfully!');
+      toast.success('Project berhasil dihapus!');
       setProjectToDelete(null);
     } catch (err: any) {
-      toast.error(err.message || 'Failed to delete project');
+      toast.error(err.message || 'Gagal menghapus project');
     } finally {
       setIsDeleting(false);
     }
   };
 
-  // Filter projects by search
+  // Filter project berdasarkan kata kunci pencarian
   const filteredProjects = projects.filter((p) => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
@@ -108,7 +108,7 @@ export default function ProjectsPage() {
     );
   });
 
-  // Global aggregate stats
+  // Statistik agregat global
   const totalProjects = projects.length;
   const totalTasks = projects.reduce(
     (acc, p) => acc + (p.taskStats?.total || 0),
@@ -128,19 +128,19 @@ export default function ProjectsPage() {
       <Navbar onNewProjectClick={handleOpenCreateModal} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Hero / Header banner */}
+        {/* Banner Hero / Ringkasan */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-950/10">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-indigo-200 backdrop-blur-sm border border-white/10">
               <FolderKanban className="w-3.5 h-3.5" />
-              Workspace Overview
+              Ringkasan Ruang Kerja
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Manage Your Projects & Tasks
+              Kelola Project & Task Anda
             </h1>
             <p className="text-indigo-200 text-sm max-w-xl">
-              Organize, track, and complete tasks seamlessly with structured
-              workflows, instant status updates, and priority tagging.
+              Organisir, pantau progres, dan selesaikan pekerjaan dengan mudah melalui
+              manajemen alur kerja terstruktur, update status cepat, dan label prioritas.
             </p>
           </div>
 
@@ -150,18 +150,18 @@ export default function ProjectsPage() {
             className="self-start md:self-center inline-flex items-center gap-2 px-5 py-3 bg-white text-indigo-900 hover:bg-indigo-50 text-sm font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all focus:ring-2 focus:ring-white/50 shrink-0"
           >
             <Plus className="w-5 h-5 text-indigo-600" />
-            Create Project
+            Buat Project Baru
           </button>
         </div>
 
-        {/* Aggregate Stats Cards */}
+        {/* Card Statistik Global */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
               <FolderKanban className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-slate-500">Total Projects</p>
+              <p className="text-xs font-medium text-slate-500">Total Project</p>
               <h3 className="text-2xl font-bold text-slate-800">{totalProjects}</h3>
             </div>
           </div>
@@ -171,7 +171,7 @@ export default function ProjectsPage() {
               <ListTodo className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-slate-500">Total Tasks</p>
+              <p className="text-xs font-medium text-slate-500">Total Task</p>
               <h3 className="text-2xl font-bold text-slate-800">{totalTasks}</h3>
             </div>
           </div>
@@ -181,7 +181,7 @@ export default function ProjectsPage() {
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-slate-500">In Progress</p>
+              <p className="text-xs font-medium text-slate-500">Sedang Dikerjakan</p>
               <h3 className="text-2xl font-bold text-slate-800">{totalInProgress}</h3>
             </div>
           </div>
@@ -191,18 +191,18 @@ export default function ProjectsPage() {
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-slate-500">Completed</p>
+              <p className="text-xs font-medium text-slate-500">Telah Selesai</p>
               <h3 className="text-2xl font-bold text-slate-800">{totalDone}</h3>
             </div>
           </div>
         </div>
 
-        {/* Search and Header Section */}
+        {/* Section Header & Pencarian */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">All Projects</h2>
+            <h2 className="text-xl font-bold text-slate-900">Daftar Project</h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Click on any project to view and manage its tasks
+              Klik pada project untuk melihat dan mengelola seluruh task di dalamnya
             </p>
           </div>
 
@@ -211,13 +211,13 @@ export default function ProjectsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search projects..."
+              placeholder="Cari nama project..."
               className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm transition-all"
             />
           </div>
         </div>
 
-        {/* UI States: Loading / Error / Empty / Grid */}
+        {/* Status UI: Loading / Error / Empty / Grid */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -226,23 +226,23 @@ export default function ProjectsPage() {
           </div>
         ) : error ? (
           <ErrorState
-            title="Failed to load projects"
+            title="Gagal memuat project"
             message={error}
             onRetry={fetchProjects}
           />
         ) : filteredProjects.length === 0 ? (
           searchQuery ? (
             <EmptyState
-              title="No projects found"
-              description={`No projects match your search term "${searchQuery}". Try a different search.`}
-              actionLabel="Clear Search"
+              title="Project tidak ditemukan"
+              description={`Tidak ada project yang cocok dengan pencarian "${searchQuery}". Coba gunakan kata kunci lain.`}
+              actionLabel="Reset Pencarian"
               onAction={() => setSearchQuery('')}
             />
           ) : (
             <EmptyState
-              title="No projects yet"
-              description="Create your first project to start organizing tasks and tracking progress."
-              actionLabel="Create Project"
+              title="Belum ada project"
+              description="Buat project pertama Anda untuk mulai mengatur task dan melacak progres pekerjaan."
+              actionLabel="Buat Project Baru"
               onAction={handleOpenCreateModal}
             />
           )
@@ -260,7 +260,7 @@ export default function ProjectsPage() {
         )}
       </main>
 
-      {/* Project Modal (Create / Edit) */}
+      {/* Modal Project (Buat / Edit) */}
       <ProjectModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -269,14 +269,15 @@ export default function ProjectsPage() {
         isLoading={isSubmitting}
       />
 
-      {/* Delete Confirmation Dialog */}
+      {/* Dialog Konfirmasi Hapus */}
       <ConfirmDialog
         isOpen={!!projectToDelete}
         onClose={() => setProjectToDelete(null)}
         onConfirm={handleDeleteProject}
-        title="Delete Project"
-        message={`Are you sure you want to delete "${projectToDelete?.title}"? All tasks associated with this project will be permanently deleted.`}
-        confirmText="Delete Project"
+        title="Hapus Project"
+        message={`Apakah Anda yakin ingin menghapus project "${projectToDelete?.title}"? Semua task di dalam project ini akan dihapus secara permanen.`}
+        confirmText="Hapus Project"
+        cancelText="Batal"
         isLoading={isDeleting}
         variant="danger"
       />

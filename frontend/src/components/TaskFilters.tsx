@@ -39,7 +39,7 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
             type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search tasks by title or description..."
+            placeholder="Cari task berdasarkan judul atau deskripsi..."
             className="w-full pl-10 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
           />
           {search && (
@@ -57,17 +57,17 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 shrink-0">
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>Priority:</span>
+            <span>Prioritas:</span>
           </div>
           <select
             value={priority}
             onChange={(e) => onPriorityChange(e.target.value as TaskPriority | 'all')}
             className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium"
           >
-            <option value="all">All Priorities</option>
-            <option value="low">Low Priority</option>
-            <option value="medium">Medium Priority</option>
-            <option value="high">High Priority</option>
+            <option value="all">Semua Prioritas</option>
+            <option value="low">Prioritas Rendah</option>
+            <option value="medium">Prioritas Sedang</option>
+            <option value="high">Prioritas Tinggi</option>
           </select>
 
           {/* Reset Filters button */}
@@ -96,7 +96,7 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            All
+            Semua
           </button>
           <button
             type="button"
@@ -118,7 +118,7 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            In Progress
+            Sedang Dikerjakan
           </button>
           <button
             type="button"
@@ -129,13 +129,13 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            Done
+            Selesai
           </button>
         </div>
 
         <div className="text-xs text-slate-400 font-medium">
-          Showing <span className="text-slate-700 font-semibold">{totalFiltered}</span> of{' '}
-          <span className="text-slate-700 font-semibold">{totalTasks}</span> tasks
+          Menampilkan <span className="text-slate-700 font-semibold">{totalFiltered}</span> dari{' '}
+          <span className="text-slate-700 font-semibold">{totalTasks}</span> task
         </div>
       </div>
     </div>

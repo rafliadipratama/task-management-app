@@ -51,9 +51,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const validate = (): boolean => {
     const newErrors: { title?: string } = {};
     if (!title.trim()) {
-      newErrors.title = 'Task title is required';
+      newErrors.title = 'Judul task wajib diisi';
     } else if (title.trim().length > 200) {
-      newErrors.title = 'Title cannot exceed 200 characters';
+      newErrors.title = 'Judul tidak boleh melebihi 200 karakter';
     }
 
     setErrors(newErrors);
@@ -79,11 +79,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEditing ? 'Edit Task' : 'Create New Task'}
+      title={isEditing ? 'Edit Task' : 'Buat Task Baru'}
       description={
         isEditing
-          ? 'Modify task information, priority, or status.'
-          : 'Add a new actionable item to this project.'
+          ? 'Perbarui informasi, prioritas, atau status task ini.'
+          : 'Tambahkan item pekerjaan baru ke dalam project ini.'
       }
       maxWidth="md"
     >
@@ -91,13 +91,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         {/* Title */}
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
-            Task Title <span className="text-rose-500">*</span>
+            Judul Task <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Implement authentication callback"
+            placeholder="Contoh: Implementasi callback otentikasi"
             disabled={isLoading}
             className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition-all ${
               errors.title
@@ -113,12 +113,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         {/* Description */}
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
-            Description <span className="text-slate-400 font-normal">(Optional)</span>
+            Deskripsi <span className="text-slate-400 font-normal">(Opsional)</span>
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Include any instructions, acceptance criteria, or links..."
+            placeholder="Tambahkan detail instruksi, kriteria penerimaan, atau catatan..."
             rows={3}
             disabled={isLoading}
             className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
@@ -136,28 +136,28 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               value={status}
               onChange={(e) => setStatus(e.target.value as TaskStatus)}
               disabled={isLoading}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium"
             >
-              <option value="todo">To Do</option>
-              <option value="in_progress">In Progress</option>
-              <option value="done">Done</option>
+              <option value="todo">Akan Dikerjakan (To Do)</option>
+              <option value="in_progress">Sedang Dikerjakan (In Progress)</option>
+              <option value="done">Selesai (Done)</option>
             </select>
           </div>
 
           {/* Priority */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
-              Priority
+              Prioritas
             </label>
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as TaskPriority)}
               disabled={isLoading}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium"
             >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
+              <option value="low">Rendah (Low)</option>
+              <option value="medium">Sedang (Medium)</option>
+              <option value="high">Tinggi (High)</option>
             </select>
           </div>
         </div>
@@ -170,7 +170,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             disabled={isLoading}
             className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors disabled:opacity-50"
           >
-            Cancel
+            Batal
           </button>
           <button
             type="submit"
@@ -180,7 +180,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             {isLoading && (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             )}
-            {isEditing ? 'Save Changes' : 'Create Task'}
+            {isEditing ? 'Simpan Perubahan' : 'Buat Task'}
           </button>
         </div>
       </form>

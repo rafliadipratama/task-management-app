@@ -61,7 +61,7 @@ export class TaskService {
     });
 
     if (!task) {
-      throw new AppError('Task not found', 404);
+      throw new AppError('Task tidak ditemukan', 404);
     }
 
     return task;
@@ -73,7 +73,7 @@ export class TaskService {
     });
 
     if (!project) {
-      throw new AppError(`Project with ID '${data.projectId}' does not exist`, 404);
+      throw new AppError(`Project dengan ID '${data.projectId}' tidak ditemukan`, 404);
     }
 
     return prisma.task.create({
@@ -98,7 +98,7 @@ export class TaskService {
   static async updateTask(id: string, data: UpdateTaskInput) {
     const existing = await prisma.task.findUnique({ where: { id } });
     if (!existing) {
-      throw new AppError('Task not found', 404);
+      throw new AppError('Task tidak ditemukan', 404);
     }
 
     if (data.projectId && data.projectId !== existing.projectId) {
@@ -106,7 +106,7 @@ export class TaskService {
         where: { id: data.projectId },
       });
       if (!project) {
-        throw new AppError(`Project with ID '${data.projectId}' does not exist`, 404);
+        throw new AppError(`Project dengan ID '${data.projectId}' tidak ditemukan`, 404);
       }
     }
 
@@ -133,10 +133,10 @@ export class TaskService {
   static async deleteTask(id: string) {
     const existing = await prisma.task.findUnique({ where: { id } });
     if (!existing) {
-      throw new AppError('Task not found', 404);
+      throw new AppError('Task tidak ditemukan', 404);
     }
 
     await prisma.task.delete({ where: { id } });
-    return { id, message: 'Task deleted successfully' };
+    return { id, message: 'Task berhasil dihapus' };
   }
 }

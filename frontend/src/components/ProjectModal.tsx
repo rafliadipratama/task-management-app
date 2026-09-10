@@ -37,9 +37,9 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
   const validate = (): boolean => {
     const newErrors: { title?: string } = {};
     if (!title.trim()) {
-      newErrors.title = 'Project title is required';
+      newErrors.title = 'Judul project wajib diisi';
     } else if (title.trim().length > 150) {
-      newErrors.title = 'Title cannot exceed 150 characters';
+      newErrors.title = 'Judul tidak boleh melebihi 150 karakter';
     }
 
     setErrors(newErrors);
@@ -62,24 +62,24 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEditing ? 'Edit Project' : 'Create New Project'}
+      title={isEditing ? 'Edit Project' : 'Buat Project Baru'}
       description={
         isEditing
-          ? 'Update the details of your project.'
-          : 'Projects organize related tasks and track overall progress.'
+          ? 'Perbarui informasi dan detail project Anda.'
+          : 'Project membantu Anda mengelompokkan task dan memantau kemajuan pekerjaan.'
       }
       maxWidth="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
-            Project Title <span className="text-rose-500">*</span>
+            Judul Project <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Website Redesign, Mobile App v2"
+            placeholder="Contoh: Redesain Website, Aplikasi Mobile v2"
             disabled={isLoading}
             className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition-all ${
               errors.title
@@ -94,12 +94,12 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
 
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
-            Description <span className="text-slate-400 font-normal">(Optional)</span>
+            Deskripsi <span className="text-slate-400 font-normal">(Opsional)</span>
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe what this project aims to accomplish..."
+            placeholder="Jelaskan tujuan atau ruang lingkup project ini..."
             rows={3}
             disabled={isLoading}
             className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
@@ -113,7 +113,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
             disabled={isLoading}
             className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors disabled:opacity-50"
           >
-            Cancel
+            Batal
           </button>
           <button
             type="submit"
@@ -123,7 +123,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
             {isLoading && (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             )}
-            {isEditing ? 'Save Changes' : 'Create Project'}
+            {isEditing ? 'Simpan Perubahan' : 'Buat Project'}
           </button>
         </div>
       </form>

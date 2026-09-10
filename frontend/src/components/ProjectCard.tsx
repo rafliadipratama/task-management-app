@@ -95,7 +95,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors text-left"
                 >
                   <Trash2 className="w-3.5 h-3.5 text-rose-500" />
-                  Delete Project
+                  Hapus Project
                 </button>
               </div>
             )}
@@ -105,7 +105,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         {/* Description */}
         <p className="text-sm text-slate-500 line-clamp-2 min-h-[2.5rem] mb-4">
           {project.description || (
-            <span className="italic text-slate-400">No description provided</span>
+            <span className="italic text-slate-400">Tidak ada deskripsi</span>
           )}
         </p>
       </div>
@@ -125,10 +125,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             {stats.todo} To Do
           </span>
           <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-medium border border-amber-100">
-            {stats.inProgress} In Progress
+            {stats.inProgress} Dikerjakan
           </span>
           <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-medium border border-emerald-100">
-            {stats.done} Done
+            {stats.done} Selesai
           </span>
         </div>
 
@@ -143,7 +143,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             href={`/projects/${project.id}`}
             className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 group-hover:translate-x-0.5 transition-all"
           >
-            Open Project
+            Buka Project
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
