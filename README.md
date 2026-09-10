@@ -38,6 +38,9 @@ Repositori ini disusun menggunakan pendekatan **Monorepo** yang rapi, terdiri da
 - **Halaman Detail Project (`/projects/[id]`)**:
   - Navigasi *breadcrumb* kembali ke daftar project.
   - Header informasi project lengkap dengan *progress bar* dan statistik counter.
+  - **Mode Tampilan Ganda (Dual View Mode)**:
+    * **Tampilan Papan Kanban (Board)**: Pengalaman interaktif visual dengan 3 kolom (*Akan Dikerjakan*, *Sedang Dikerjakan*, *Selesai*). Dilengkapi fitur **Drag and Drop** kartu task antar kolom dengan *optimistic UI update*, drop-zone highlight, tombol pemindah cepat (ramah layar sentuh), serta shortcut tambah task per kolom.
+    * **Tampilan Daftar (List)**: Tampilan daftar klasik yang ringkas dan terstruktur.
   - **Pencarian & Filter Task**:
     * **Pencarian Kata Kunci**: Pencarian teks instan pada judul maupun deskripsi task.
     * **Filter Status**: `Semua`, `To Do`, `Sedang Dikerjakan`, `Selesai`.
@@ -370,9 +373,16 @@ Base URL: `http://localhost:5001/api`
 
 ---
 
-## 🧪 Uji Coba & Build
+## 🧪 Uji Coba & Automated Testing
 
-Untuk memastikan semua modul terkompilasi tanpa kesalahan:
+Untuk menjalankan automated integration test pada backend (12 test suites meliputi endpoint API, validasi Zod, dan cascading delete):
+
+```bash
+# Jalankan pengujian otomatis
+npm test
+```
+
+Untuk memastikan seluruh modul backend dan frontend terkompilasi tanpa kesalahan (*build verification*):
 
 ```bash
 # Build backend

@@ -9,6 +9,7 @@ import { TaskModal } from '@/components/TaskModal';
 import { ProjectModal } from '@/components/ProjectModal';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { TaskFilters } from '@/components/TaskFilters';
+import { KanbanBoard } from '@/components/KanbanBoard';
 import { ProgressBar } from '@/components/ProgressBar';
 import { EmptyState } from '@/components/EmptyState';
 import { ErrorState } from '@/components/ErrorState';
@@ -34,6 +35,8 @@ import {
   Clock,
   AlertCircle,
   ListTodo,
+  LayoutList,
+  Kanban,
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
@@ -47,6 +50,9 @@ export default function ProjectDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // View Mode state: List vs Kanban Board
+  const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
+
   // Filter & Search states
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
@@ -55,6 +61,7 @@ export default function ProjectDetailPage() {
   // Task Modal states
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+  const [taskModalInitialStatus, setTaskModalInitialStatus] = useState<TaskStatus>('todo');
   const [isSubmittingTask, setIsSubmittingTask] = useState(false);
 
   // Project Edit Modal states
@@ -130,8 +137,9 @@ export default function ProjectDetailPage() {
   }, [tasks]);
 
   // --- Aksi Task ---
-  const handleOpenCreateTask = () => {
+  const handleOpenCreateTask = (initialStatus: TaskStatus = 'todo') => {
     setTaskToEdit(null);
+    setTaskModalInitialStatus(initialStatus);
     setIsTaskModalOpen(true);
   };
 
@@ -311,7 +319,7 @@ export default function ProjectDetailPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={handleOpenCreateTask}
+                    onClick={() => handleOpenCreateTask('todo')}
                     className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm hover:shadow transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
                     <Plus className="w-4 h-4" />
@@ -385,14 +393,51 @@ export default function ProjectDetailPage() {
               totalTasks={tasks.length}
             />
 
-            {/* Daftar Task / Kondisi Kosong */}
+            {/* View Switcher: Daftar (List) vs Papan Kanban (Board) */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-slate-900">Task Project</h3>
+                <span className="text-xs font-medium text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-full">
+                  {filteredTasks.length} task
+                </span>
+              </div>
+
+              <div className="inline-flex rounded-xl bg-slate-200/70 p-1 border border-slate-200/80 self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('board')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                    viewMode === 'board'
+                      ? 'bg-white text-indigo-600 shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <Kanban className="w-3.5 h-3.5" />
+                  Papan Kanban
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('list')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                    viewMode === 'list'
+                      ? 'bg-white text-indigo-600 shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <LayoutList className="w-3.5 h-3.5" />
+                  Daftar (List)
+                </button>
+              </div>
+            </div>
+
+            {/* Daftar Task / Kondisi Kosong / Papan Kanban */}
             {filteredTasks.length === 0 ? (
               tasks.length === 0 ? (
                 <EmptyState
                   title="Belum ada task di project ini"
                   description="Tambahkan item pekerjaan pertama Anda untuk mulai mengatur alur kerja dan memantau progres."
                   actionLabel="Tambah Task Pertama"
-                  onAction={handleOpenCreateTask}
+                  onAction={() => handleOpenCreateTask('todo')}
                 />
               ) : (
                 <EmptyState
@@ -402,6 +447,14 @@ export default function ProjectDetailPage() {
                   onAction={handleResetFilters}
                 />
               )
+            ) : viewMode === 'board' ? (
+              <KanbanBoard
+                tasks={filteredTasks}
+                onStatusChange={handleStatusChange}
+                onEditTask={handleOpenEditTask}
+                onDeleteTask={(t) => setTaskToDelete(t)}
+                onAddTask={(initialStatus) => handleOpenCreateTask(initialStatus || 'todo')}
+              />
             ) : (
               <div className="grid grid-cols-1 gap-3.5">
                 {filteredTasks.map((task) => (
@@ -426,6 +479,7 @@ export default function ProjectDetailPage() {
         onSubmit={handleTaskSubmit}
         taskToEdit={taskToEdit}
         projectId={projectId}
+        initialStatus={taskModalInitialStatus}
         isLoading={isSubmittingTask}
       />
 

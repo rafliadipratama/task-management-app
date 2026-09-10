@@ -16,6 +16,7 @@ interface TaskModalProps {
   onSubmit: (data: CreateTaskPayload | UpdateTaskPayload) => Promise<void>;
   taskToEdit?: Task | null;
   projectId: string;
+  initialStatus?: TaskStatus;
   isLoading?: boolean;
 }
 
@@ -25,6 +26,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onSubmit,
   taskToEdit,
   projectId,
+  initialStatus = 'todo',
   isLoading = false,
 }) => {
   const [title, setTitle] = useState('');
@@ -42,11 +44,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     } else {
       setTitle('');
       setDescription('');
-      setStatus('todo');
+      setStatus(initialStatus);
       setPriority('medium');
     }
     setErrors({});
-  }, [taskToEdit, isOpen]);
+  }, [taskToEdit, isOpen, initialStatus]);
 
   const validate = (): boolean => {
     const newErrors: { title?: string } = {};
